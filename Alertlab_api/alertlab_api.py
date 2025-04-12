@@ -240,7 +240,7 @@ def get_property_detailsv4(location_id):
     Returns property details for a single property. Use it after the query to filter for queried location_id.
     """
     hidden_token = get_token('hidden_api')
-    time.sleep(3)
+    #time.sleep(3)
     propertydetails_endpoint = "https://www.alertaq.com/api/v4/dataModel/read"
     headers = {
         "authorization": hidden_token,
