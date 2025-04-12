@@ -1,0 +1,19 @@
+Here is the current situtation in regards to building the database:
+  ##LIMITATIONS
+    Alertlabs limits our API usage to 3600 requests/hour (1 requests/second) and to 100mb per device per month (100mb per device / 0.8mb per 30 day minute water resolution = 125 requests per month at a 30 day minute water resolution level)
+  ##TIMESERIES DATA
+    Further more we have 207 devices (watermeter = 1st gen Flowie / FlowieO = 2nd gen flowie) 
+      1. the client list dataframe (131 locations with addtional info) 
+      2. for 30 days of minute resolution data per sensor it will be 1441959 byes ot 1.44mb (this is our initial load)
+      3. In order to save all of your timeseries data at the MINUTE resolution we will first have to initially load 207 devices * 1.44mb  = 298.08mb of time series data
+  ##TOMBSTONE DATA
+
+
+@@@ TODO @@@
+Incorporate tombstone data into the initial location dataframe 
+Add a parent ID dropdown to further sort down properties
+Clean up the alertlabAPI.py file 
+Fix up the credentials functions 
+Finish the constraints table above
+
+https://app.smartdraw.com/editor.aspx?credID=-67109037&depoId=59328838&flags=128

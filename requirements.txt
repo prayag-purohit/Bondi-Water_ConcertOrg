@@ -1,0 +1,10 @@
+pytz==2024.1
+pandas==2.2.2
+plotly==5.23.0
+streamlit==1.36.0
+altair==5.3.0
+streamlit_toggle_switch==1.0.2
+statsmodels==0.14.2
+Requests==2.32.3
+dotenv==0.9.9
+boto3==1.37.11
