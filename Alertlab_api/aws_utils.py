@@ -1,18 +1,46 @@
 # aws_utils.py
 import os, boto3, io, logging
 from datetime import datetime
+import streamlit as st
 from dotenv import load_dotenv
+from pathlib import Path
 
+# Load local .env if available
 load_dotenv()
-BUCKET_NAME = os.getenv("BUCKET_NAME")
+
+def secrets_file_exists():
+    """Check if secrets.toml exists locally (to avoid Streamlit error)."""
+    return Path('.streamlit/secrets.toml').is_file() or Path.home().joinpath('.streamlit/secrets.toml').is_file()
+
+def get_secret(key):
+    """Unified secrets loader for Streamlit Cloud or local .env."""
+    if secrets_file_exists():
+        try:
+            value = st.secrets[key]
+            #logger.info(f"Loaded {key} from Streamlit secrets.")
+            return value
+        except KeyError as e:
+            print(f"KeyError: {e}")
+            #logger.warning(f"{key} not found in secrets.toml.")
+    else:
+        #logger.info(f"Running locally. Fetching {key} from .env")
+        return os.getenv(key)
+
+# Load credentials and config
+AWS_ACCESS_KEY_ID = get_secret("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = get_secret("AWS_SECRET_ACCESS_KEY")
+AWS_REGION = get_secret("AWS_REGION")
+BUCKET_NAME = get_secret("BUCKET_NAME")
+#LOG_LOC = get_secret("LOG_LOC") or "Logs/"
+
 LOG_KEY = f'Logs/app-session-at-{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log'
 
 # Initialize S3 client
 _s3_client = boto3.client(
     "s3",
-    aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
-    aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-    region_name=os.getenv("AWS_REGION"),
+    aws_access_key_id=AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    region_name=AWS_REGION,
 )
 
 # Initialize logger and log stream

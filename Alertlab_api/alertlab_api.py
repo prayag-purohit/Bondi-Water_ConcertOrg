@@ -8,16 +8,36 @@ from dotenv import load_dotenv
 import urllib.parse as urlparse
 import io
 import time
+import streamlit as st
 import logging
 import pandas as pd
+from pathlib import Path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from Alertlab_api.aws_utils import get_s3_client_and_bucket_name, upload_log_to_s3, get_logger_and_log_stream
 
+load_dotenv()  # Still needed for local development
 
-load_dotenv()
+
 TOKEN_KEY = 'token.txt'
 logger, log_stream = get_logger_and_log_stream()
 
+def secrets_file_exists():
+    """Check if secrets.toml exists locally (to avoid Streamlit error)."""
+    return Path('.streamlit/secrets.toml').is_file() or Path.home().joinpath('.streamlit/secrets.toml').is_file()
+
+def get_secret(key):
+    """Unified secrets loader for Streamlit Cloud or local .env."""
+    if secrets_file_exists():
+        try:
+            value = st.secrets[key]
+            logger.info(f"Loaded {key} from Streamlit secrets.")
+            return value
+        except KeyError:
+            logger.warning(f"{key} not found in secrets.toml.")
+    else:
+        logger.info(f"Running locally. Fetching {key} from .env")
+    
+    return os.getenv(key)
 
 #########################################################################################################################
 # AUTHORIZATION FUNCTIONS 
@@ -25,13 +45,12 @@ HIDDEN_LOGIN_API = "https://www.alertaq.com/api/v4/login"
 TOKEN_API = 'https://www.alertaq.com/api/v4/public/login'
 
 def _get_credentials():
-    """Fetch credentials from .env file."""
-    load_dotenv()
+    """Fetch credentials from Streamlit secrets or .env fallback."""
     return {
-        "user": os.getenv("ALERTLABS_USER"),
-        "password": os.getenv("ALERTLABS_PASSWORD"),
-        "client_secret": os.getenv("ALERTLABS_CLIENT_SECRET"),
-        "user_id": os.getenv("ALERTLABS_USERID"),
+        "user": get_secret("ALERTLABS_USER"),
+        "password": get_secret("ALERTLABS_PASSWORD"),
+        "client_secret": get_secret("ALERTLABS_CLIENT_SECRET"),
+        "user_id": get_secret("ALERTLABS_USERID"),
     }
 
 def _read_token_from_file():
