@@ -3,4 +3,4 @@
 /__pycache__
 /.vs
 query_sensor.ipynb
-Alertlab_api\.env
+Alertlab_api/.env
