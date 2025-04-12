@@ -206,8 +206,10 @@ with st.sidebar:
     }
     </style>
     """, unsafe_allow_html=True)
-
-    st.markdown('<p class="big-font">Water Consumption Dashboard</p>', unsafe_allow_html=True)
+    with open("app_title.txt", "r") as file:
+        title = file.read().strip()
+    
+    st.markdown(f'<p class="big-font">{title}</p>', unsafe_allow_html=True)
     # Parent Organization filter
     parent_list = sorted(list(df.name_parent.unique())[::-1])
     selected_address = st.selectbox('Select Organization:', parent_list)

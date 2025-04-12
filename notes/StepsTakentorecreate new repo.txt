@@ -3,4 +3,4 @@
 - Created a new S3 bucket with appropriate name, and subfolder called 'Logs' 
 - Created an IAM user, and created access keys
 - Pasted bucket name, log location, region, and access keys to the env file 
-
+- Added a way to dynamically change the app name (Can directly paste files across both repos because of this)
