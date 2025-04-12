@@ -1,0 +1,6 @@
+- Cloned the repo, removed origin, added new remote origin, and pushed upstream without the old history. 
+- Change the credentials in ENV file
+- Created a new S3 bucket with appropriate name, and subfolder called 'Logs' 
+- Created an IAM user, and created access keys
+- Pasted bucket name, log location, region, and access keys to the env file 
+
